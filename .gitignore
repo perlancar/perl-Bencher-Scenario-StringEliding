@@ -1,0 +1,4 @@
+Bencher-Scenario-StringEliding-*
+.build
+*~
+nytprof*

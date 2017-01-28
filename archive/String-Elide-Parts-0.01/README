@@ -1,0 +1,68 @@
+SYNOPSIS
+
+     use String::Elide qw(elide);
+    
+     # single string with no parts
+    
+     my $text = "this is your brain";
+     elide($text, 16);                       # -> "this is your ..."
+     elide($text, 16, {truncate=>"left"});   # -> "...is your brain"
+     elide($text, 16, {truncate=>"middle"}); # -> "this is... brain"
+     elide($text, 16, {truncate=>"ends"});   # -> "... is your b..."
+    
+     elide($text, 16, {marker=>"--"});       # -> "this is your b--"
+     elide($text, 16, {marker=>"--"});       # -> "this is your b--"
+    
+     # multipart strings: we want to elide URL first, then the Downloading text,
+     # then the speed
+    
+     $text = "<elspan prio=2>Downloading</elspan> <elspan prio=3 truncate=middle>http://www.example.com/somefile</elspan> 320.0k/5.5M";
+     elide($text, 56); # -> "Downloading http://www.example.com/somefile 320.0k/5.5M"
+     elide($text, 55); # -> "Downloading http://www.example.com/somefile 320.0k/5.5M"
+     elide($text, 50); # -> "Downloading http://www.e..com/somefile 320.0k/5.5M"
+     elide($text, 45); # -> "Downloading http://ww..m/somefile 320.0k/5.5M"
+     elide($text, 40); # -> "Downloading http://..omefile 320.0k/5.5M"
+     elide($text, 35); # -> "Downloading http..efile 320.0k/5.5M"
+     elide($text, 30); # -> "Downloading ht..le 320.0k/5.5M"
+     elide($text, 25); # -> "Downloading . 320.0k/5.5M"
+     elide($text, 24); # -> "Downloading  320.0k/5.5M"
+     elide($text, 23); # -> "Download..  320.0k/5.5M"
+     elide($text, 20); # -> "Downl..  320.0k/5.5M"
+     elide($text, 15); # -> "..  320.0k/5.5M"
+     elide($text, 13); # -> "  320.0k/5.5M"
+     elide($text, 12); # -> "  320.0k/5.."
+
+DESCRIPTION
+
+    String::Elide is similar to other string eliding modules, with one main
+    difference: it accepts string marked with parts of different
+    priorities. The goal is to retain more important information as much as
+    possible when length is reduced.
+
+FUNCTIONS
+
+ elide($str, $len[, \%opts]) => str
+
+    Elide a string if length exceeds $len.
+
+    String can be marked with <elspan prio=N truncate=T>...</elspan> so
+    there can be multiple parts with different priorities and truncate
+    direction. The default priority is 1. You can mark less important
+    strings with higher priority to let it be elided first.
+
+    Known options:
+
+      * marker => str (default: '..')
+
+      * truncate => 'left'|'middle'|'middle'|'ends' (default: 'right')
+
+SEE ALSO
+
+ Similar elide modules
+
+    Text::Elide is simple, does not have many options, and elides at word
+    boundaries.
+
+    String::Truncate has similar interface like String::Elide and has some
+    options.
+
